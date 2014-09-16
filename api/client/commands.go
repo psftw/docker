@@ -2584,7 +2584,7 @@ func (cli *DockerCli) CmdHosts(args ...string) error {
 }
 
 func (cli *DockerCli) CmdHostsList(args ...string) error {
-	cmd := cli.Subcmd("list", "", "List hosts")
+	cmd := cli.Subcmd("hosts list", "", "List hosts")
 	if err := cmd.Parse(args); err != nil {
 		return err
 	}
@@ -2604,7 +2604,7 @@ func (cli *DockerCli) CmdHostsList(args ...string) error {
 }
 
 func (cli *DockerCli) CmdHostsCreate(args ...string) error {
-	cmd := cli.Subcmd("create", "NAME", "Create hosts")
+	cmd := cli.Subcmd("hosts create", "NAME", "Create hosts")
 
 	flOption := opts.NewListOpts(opts.ValidateOption)
 	cmd.Var(&flOption, []string{"o", "-option"}, "Set driver config option, in format key=value")
@@ -2631,7 +2631,7 @@ func (cli *DockerCli) CmdHostsCreate(args ...string) error {
 }
 
 func (cli *DockerCli) CmdHostsRm(args ...string) error {
-	cmd := cli.Subcmd("rm", "NAME", "Remove a host")
+	cmd := cli.Subcmd("hosts rm", "NAME", "Remove a host")
 	if err := cmd.Parse(args); err != nil {
 		return err
 	}
