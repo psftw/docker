@@ -2613,7 +2613,7 @@ func (cli *DockerCli) CmdHostsList(args ...string) error {
 		if *quiet {
 			fmt.Fprintf(w, "%s\n", host.Name)
 		} else {
-			state, err := host.Driver.State()
+			state, err := host.Driver.GetState()
 			if err != nil {
 				return err
 			}
