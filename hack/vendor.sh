@@ -11,17 +11,17 @@ clone() {
 	vcs=$1
 	pkg=$2
 	rev=$3
-	
+
 	pkg_url=https://$pkg
 	target_dir=src/$pkg
-	
+
 	echo -n "$pkg @ $rev: "
-	
+
 	if [ -d $target_dir ]; then
 		echo -n 'rm old, '
 		rm -fr $target_dir
 	fi
-	
+
 	echo -n 'clone, '
 	case $vcs in
 		git)
@@ -32,10 +32,10 @@ clone() {
 			hg clone --quiet --updaterev $rev $pkg_url $target_dir
 			;;
 	esac
-	
+
 	echo -n 'rm VCS, '
 	( cd $target_dir && rm -rf .{git,hg} )
-	
+
 	echo done
 }
 
@@ -47,11 +47,19 @@ clone git github.com/gorilla/mux 136d54f81f
 
 clone git github.com/tchap/go-patricia v1.0.1
 
+clone git github.com/digitalocean/godo v0.4.0
+
+clone git github.com/google/go-querystring 30f7a39f4a218feb5325f3aebc60c32a572a8274
+
+clone git github.com/tent/http-link-go ac974c61c2f990f4115b119354b5e0b47550e888
+
 clone hg code.google.com/p/go.net 84a4013f96e0
 
 clone hg code.google.com/p/gosqlite 74691fb6f837
 
 clone git github.com/docker/libtrust d273ef2565ca
+
+clone hg code.google.com/p/goauth2 afe77d958c70
 
 # get Go tip's archive/tar, for xattr support and improved performance
 # TODO after Go 1.4 drops, bump our minimum supported version and drop this vendored dep
