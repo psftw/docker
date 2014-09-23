@@ -2609,6 +2609,7 @@ func (cli *DockerCli) CmdHostsList(args ...string) error {
 	if !*quiet {
 		fmt.Fprintln(w, "NAME\tDRIVER\tSTATE\tURL")
 	}
+	w.Flush()
 
 	for _, host := range hostList {
 		if *quiet {
@@ -2624,11 +2625,11 @@ func (cli *DockerCli) CmdHostsList(args ...string) error {
 				return err
 			}
 
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n", host.Name, host.Driver.DriverName(), state.String(), url)
+			fmt.Fprintf(w, "%s\t%s\t%s\t%s\n",
+				host.Name, host.Driver.DriverName(), state.String(), url)
+			w.Flush()
 		}
 	}
-
-	w.Flush()
 
 	return nil
 }
