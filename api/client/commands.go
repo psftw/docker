@@ -17,6 +17,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"text/tabwriter"
 	"text/template"
@@ -2617,39 +2618,49 @@ func (cli *DockerCli) CmdHostsList(args ...string) error {
 	if !*quiet {
 		fmt.Fprintln(w, "NAME\tACTIVE\tDRIVER\tSTATE\tURL")
 	}
-	// w.Flush()
+
+	wg := sync.WaitGroup{}
 
 	for _, host := range hostList {
+		host := host
 		if *quiet {
 			fmt.Fprintf(w, "%s\n", host.Name)
 		} else {
-			isActive, err := store.IsActive(&host)
-			if err != nil {
-				log.Errorf("error determining whether host %q is active: %s",
-					host.Name, err)
-			}
+			wg.Add(1)
+			go func() {
+				currentState, err := host.Driver.GetState()
+				if err != nil {
+					log.Errorf("error getting state for host %s: %s", host.Name, err)
+				}
 
-			activeString := ""
-			if isActive {
-				activeString = "*"
-			}
+				if err = host.SaveConfig(); err != nil {
+					log.Errorf("error saving host config after learning state: %s", err)
+				}
 
-			state, err := host.Driver.GetState()
-			if err != nil {
-				log.Errorf("error getting state for host %s: %s", host.Name, err)
-			}
+				url, err := host.Driver.GetURL()
+				if err != nil {
+					log.Errorf("error getting URL for host %s: %s", host.Name, err)
+				}
 
-			url, err := host.Driver.GetURL()
-			if err != nil {
-				log.Errorf("error getting URL for host %s: %s", host.Name, err)
-			}
+				isActive, err := store.IsActive(&host)
+				if err != nil {
+					log.Errorf("error determining whether host %q is active: %s",
+						host.Name, err)
+				}
 
-			fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n",
-				host.Name, activeString, host.Driver.DriverName(), state.String(), url)
-			// w.Flush()
+				activeString := ""
+				if isActive {
+					activeString = "*"
+				}
+
+				fmt.Fprintf(w, "%s\t%s\t%s\t%s\t%s\n",
+					host.Name, activeString, host.Driver.DriverName(), currentState, url)
+				wg.Done()
+			}()
 		}
 	}
 
+	wg.Wait()
 	w.Flush()
 
 	return nil
