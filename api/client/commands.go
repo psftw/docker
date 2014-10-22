@@ -2633,10 +2633,6 @@ func (cli *DockerCli) CmdHostsList(args ...string) error {
 					log.Errorf("error getting state for host %s: %s", host.Name, err)
 				}
 
-				if err = host.SaveConfig(); err != nil {
-					log.Errorf("error saving host config after learning state: %s", err)
-				}
-
 				url, err := host.Driver.GetURL()
 				if err != nil {
 					log.Errorf("error getting URL for host %s: %s", host.Name, err)

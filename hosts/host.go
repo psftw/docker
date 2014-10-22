@@ -129,6 +129,9 @@ func (h *Host) LoadConfig() error {
 }
 
 func (h *Host) SaveConfig() error {
+	if h.Name == "default" {
+		return fmt.Errorf("Default host's config cannot be saved")
+	}
 	data, err := json.Marshal(h)
 	if err != nil {
 		return err
