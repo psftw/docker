@@ -9,8 +9,8 @@ import (
 	"strings"
 	"time"
 
-	azure "github.com/docker/docker/vendor/src/github.com/MSOpenTech/azure-sdk-for-go"
-	"github.com/docker/docker/vendor/src/github.com/MSOpenTech/azure-sdk-for-go/clients/vmClient"
+	azure "github.com/MSOpenTech/azure-sdk-for-go"
+	"github.com/MSOpenTech/azure-sdk-for-go/clients/vmClient"
 
 	"github.com/docker/docker/hosts/drivers"
 	"github.com/docker/docker/hosts/ssh"
